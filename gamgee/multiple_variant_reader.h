@@ -4,6 +4,7 @@
 #include "htslib/vcf.h"
 
 #include "variant_header.h"
+#include "reference_block_splitting_variant_iterator.h"
 #include "utils/hts_memory.h"
 #include "utils/variant_utils.h"
 
@@ -141,6 +142,8 @@ class MultipleVariantReader {
       throw HeaderException{};
   }
 };
+
+using GVCFReader = MultipleVariantReader<ReferenceBlockSplittingVariantIterator>;
 
 }  // end namespace gamgee
 

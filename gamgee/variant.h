@@ -50,7 +50,6 @@ class Variant {
   VariantFilters filters() const;                                                                             ///< returns a vector-like object with all the filters for this record
   bool has_filter(const std::string& filter) const;                                                           ///< checks for the existence of a filter in this record
 
-
   // individual field getters (a.k.a "format fields")
   IndividualField<Genotype> genotypes() const;                                                                 ///< special getter for the Genotype (GT) field. Returns a random access object with all the values in a given GT tag for all samples contiguous in memory. @warning Only int8_t GT fields have been tested. @warning Missing GT fields are untested. @warning creates a new object but makes no copies of the underlying values.
   IndividualField<IndividualFieldValue<int32_t>> integer_individual_field(const std::string& tag) const;       ///< returns a random access object with all the values in a given individual field tag in integer format for all samples contiguous in memory.  @warning creates a new object but makes no copies of the underlying values.
@@ -81,6 +80,10 @@ class Variant {
   SharedField<int32_t> shared_field_as_integer(const int32_t index) const;       ///< same as integer_shared_field but will attempt to convert underlying data to integer if possible. @warning creates a new object but makes no copies of the underlying values.
   SharedField<float> shared_field_as_float(const int32_t index) const;           ///< same as float_shared_field but will attempt to convert underlying data to float if possible. @warning creates a new object but makes no copies of the underlying values.
   SharedField<std::string> shared_field_as_string(const int32_t index) const;    ///< same as string_shared_field but will attempt to convert underlying data to string if possible. @warning creates a new object but makes no copies of the underlying values.
+
+  // nasty temporary hacks for Joel
+  inline void set_alignment_start(const int32_t start) { m_body->pos = start - 1; }
+  inline void set_alignment_stop(const int32_t end) { m_body->rlen = end - m_body->pos; }
 
   /**
    * @brief functional-stlye set logic operations for variant field vectors
@@ -164,6 +167,7 @@ class Variant {
   template<class FIELD_TYPE, class INDEX_OR_TAG> IndividualField<IndividualFieldValue<FIELD_TYPE>> individual_field_as(const INDEX_OR_TAG& p) const;
 
   friend class VariantWriter;
+  friend class ReferenceBlockSplittingVariantIterator;
 };
 
 }  // end of namespace
