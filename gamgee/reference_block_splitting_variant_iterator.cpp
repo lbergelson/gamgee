@@ -8,7 +8,7 @@ ReferenceBlockSplittingVariantIterator::ReferenceBlockSplittingVariantIterator()
   m_split_variants {}
 {}
 
-ReferenceBlockSplittingVariantIterator::ReferenceBlockSplittingVariantIterator(const std::vector<vcfFile*> variant_files, const std::shared_ptr<bcf_hdr_t> variant_header) :
+ReferenceBlockSplittingVariantIterator::ReferenceBlockSplittingVariantIterator(const std::vector<std::shared_ptr<htsFile>> variant_files, const std::shared_ptr<bcf_hdr_t> variant_header) :
   MultipleVariantIterator {variant_files, variant_header},
   m_pending_variants {},
   m_split_variants {}
@@ -16,12 +16,6 @@ ReferenceBlockSplittingVariantIterator::ReferenceBlockSplittingVariantIterator(c
   m_split_variants.reserve(variant_files.size());
   fetch_next_split_vector();
 }
-
-ReferenceBlockSplittingVariantIterator::ReferenceBlockSplittingVariantIterator(ReferenceBlockSplittingVariantIterator&& original) :
-  MultipleVariantIterator {std::move(original)},
-  m_pending_variants {std::move(original.m_pending_variants)},
-  m_split_variants {std::move(original.m_split_variants)}
-{}
 
 std::vector<Variant>& ReferenceBlockSplittingVariantIterator::operator*() {
   return m_split_variants;
